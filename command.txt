@@ -1,0 +1,42 @@
+acc = '0xA9De700656B15946d72779ce89062345702Bd853'
+pid.register_company_account("Zero wing", "7581ac9c227dffd844ae3d6a8f81a8e78cee5256541fbe9192a2f4c28a3e6599", "Asd,car15", {'from': acc})
+
+pid.register_product("iPhone XR", "Smart Phone", 2020, 1690.00, 2000, 'Thailand', 'Iphone 
+made smart phone from Apple', {'from': acc})
+
+
+Account => Company
+
+
+Company - Many products
+
+1 company address -> products
+
+
+
+ """self.products_details[msg.sender] = Product({
+        name: _name, 
+        category: _category, 
+        release_year: _release_year, 
+        price: _price, 
+        total_units: _total_units, 
+        country: _country, 
+        description: _description
+        })
+    """
+
+
+1 Company -> 1000 Products
+
+
+1 Company -> 1000 Products
+1 Product -> 1000 units
+
+
+Company_Adddr -> Products [1000]
+Products[1] -> 1000 units
+
+Products[1].pk -> Units [1000]
+
+1 Unit:
+ - Serial Code
