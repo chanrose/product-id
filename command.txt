@@ -35,17 +35,48 @@ Dictionary - Key is PK, value => Product
 List of all keys (all pk)
 Index for the list of all keys
 
-def generate(length):
-    temp = []
-    for i in range(length):
-        temp.append(b'0x0000000000000000000000000000000000000000000000000000000000000000')
-    return temp
-
+acc = "0xA7E7732303307Ef78994B396F4624b793675062E"
 
 pid.register_company_account(b"Zero Wing", "a51a7641fafb6a33dc0cd8542d5dea6dc84d4ae219321d2e8675c383ecbf3461", b"Asd,car15", {'from': '0xA7E7732303307Ef78994B396F4624b793675062E'})
 
-acc = "0xA7E7732303307Ef78994B396F4624b793675062E"
 
-pid.register_product(b"iPhone XR", "Smart Phone", 2020, '1555.05', 2000, 'Thailand', 'Apple SmartPhone', {'from': acc})
+pid.register_product(b"Primary_key 222", b"Samsung XR", "Smart Phone", 2020, '1555.05', 2000, 'Thailand', 'Apple SmartPhone', {'from': acc})
+
+
+PK-124989123812931
+
+pid.register_product(b"PK-124989123812931", b"OnePlus 6T", "Smart Phone", 2020, '1500.02', 1000, 'Thailand', 'Apple Smart Phoen', {'from': acc})
+
+pid.register_product(b"PK-124989123812931", b"iPhone XR", "Smart Phone", 2020, '1500.02', 
+1000, 'Thailand', 'Apple Smart Phoen', {'from': acc})
+
+
+def generate(length):
+    temp = []
+    for i in range(length):
+        temp.append(b'0')
+    return temp
+
+
+acc = '0xA9De700656B15946d72779ce89062345702Bd853'
+sec = '7581ac9c227dffd844ae3d6a8f81a8e78cee5256541fbe9192a2f4c28a3e6599'
+pid.register_company_account(b"Zero Wing", sec, b"Asd,car15", {'from': acc})
+
+pid.register_product(b"pk-fawkefjhauwf3faf", b"iPhone XX", b"Smartphoen", 2021, '2000.21', 10, b"Thailand", "iPhone from Apple", [91832123, 123123, 124152, 124123, 12312314, 12412312, 1231231, 123123, 123123, 1231245], {'from': acc})
+
+pid.register_product(b"pk-fawkefjhau1245", b"Samsung XX", b"TV", 2021, '2000.21', 5, b"Singapore", "Samsung TV", [91832123, 123123, 124152, 124123, 12312314, 0, 0, 0, 0, 0], {'from': acc})
+
+
+acc2 = '0xddeb2F0B04171916944e4DE57d40b26B708A8021'
+sec2 = '671678a37bd310301e4d6fe6f805f4a229b320faf6ffff0c1a25e8adddabaee2'
+pid.register_company_account(b"Infinity", sec2, b"Asd,car15", {'from': acc2})
+
+pid.register_product(b"pk-fawkefjhauwf124", b"OnePlus 6t", b"Smartphoen", 2018, '3000.21', 9, b"Cambodia", "Android phoen from China", [432123, 123123, 124152, 124123, 12312314, 12412312, 1231231, 123123, 123123, 1231245], {'from': acc2})
+
+pid.register_product(b"pk-53432au1245", b"MSI XX", b"Laptop", 1991, '6000.21', 5, b"China", "Power house laptop", [432123, 123123, 124152, 124123, 12312314, 56, 0, 0, 0, 0], {'from': acc2})
+
+pid.register_product(b"pk008312auwf3faf", b"Vyper", b"Programming Language", 2015, '000.12', 8, b"Australia", "Ethereum Progamming language", [123, 123123, 124152, 124123, 12312314, 12412312, 1231231, 123123, 123123, 1231245], {'from': acc2})
+
+pid.register_product(b"1241daskefjhau1245", b"Yours Truly", b"Human", 2008, '200.21', 5, b"Myanmar", "Teenager boy", [2123, 123123, 124152, 124123, 12312314, 0, 0, 0, 0, 0], {'from': acc2})
 
 

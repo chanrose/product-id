@@ -8,13 +8,12 @@ struct Account:
 struct Product:
     pk: bytes32
     name: bytes32
-    category: String[30]
+    category: bytes32
     release_year: uint256
     price: decimal
-    total_units: uint256
-    country: String[30]
+    country: bytes32
     description: String[100]
-    owner: address
+    unit_serial_list: uint256[10]
 
 # For Company Account Address
 accounts_details: HashMap[address, Account]
@@ -26,11 +25,6 @@ contract_owner: public(address)
 # Product
 # Primary Key -> Product
 products_details: HashMap[address, Product[1000]]
-products_pk: bytes32[1000]
-products_pk_index: uint256
-
-# Units
-units_details: HashMap[bytes32, bytes32[1000]]
 
 @external
 def __init__():
@@ -59,70 +53,111 @@ def register_company_account(_name:bytes32, _secret_key:String[64], _password: b
     self.accounts_lists[self.account_index] = msg.sender
     self.account_index += 1
 
+@view
+@external
+def get_company_account_name() -> bytes32:
+    return self.accounts_details[msg.sender].name
+
+
 # PK should be the hash format of timestamp + company name + product name
 @external
 def register_product(
     _pk:bytes32,
     _name:bytes32, 
-    _category:String[30], 
+    _category:bytes32, 
     _release_year:uint256, 
     _price:decimal, 
-    _total_units:uint256, 
-    _country:String[30], 
-    _description:String[100]
+    _country:bytes32, 
+    _description:String[100],
+    _serial_lists:uint256[10]
     ):
-    assert self.exists_account(msg.sender), "Please create your account first"
-   
+    assert self.exists_account(msg.sender), "You are not authorize"
     self.products_details[msg.sender][self.accounts_details[msg.sender].product_index] = Product({
         pk: _pk,
         name: _name, 
         category: _category, 
         release_year: _release_year, 
         price: _price, 
-        total_units: _total_units, 
         country: _country, 
         description: _description,
-        owner: msg.sender
+        unit_serial_list: _serial_lists
         })
     self.accounts_details[msg.sender].product_index += 1
+
+
+@external
+def update_product(
+    _target_product_pk:bytes32,
+    _name:bytes32, 
+    _category:bytes32, 
+    _price:decimal, 
+    _description:String[100],
+    ):
+    assert self.exists_account(msg.sender), "You are not authorize"
+    max_len: uint256 = self.accounts_details[msg.sender].product_index
+    for i in range(1000):
+        if i >= max_len:
+            break
+        if self.products_details[msg.sender][i].pk == _target_product_pk:
+            product: Product = self.products_details[msg.sender][i]
+            product.name= _name
+            product.category = _category
+            product.price = _price
+            product.description = _description
+            self.products_details[msg.sender][i] = product
 
 @view
 @external
 def get_list_of_products(_arr:bytes32[1000]) -> bytes32[1000]:
+    assert self.exists_account(msg.sender), "You are not authorize"
     list_of_products: bytes32[1000] = _arr
     temp_index: uint256 = 0
     max_index: uint256 = self.accounts_details[msg.sender].product_index
-    length: int256 = 100
-    for i in range(100):
+    for i in range(1000):
         if temp_index > max_index:
             break
-        list_of_products[temp_index] = self.products_details[msg.sender][i].name
+        list_of_products[temp_index] = self.products_details[msg.sender][i].pk
         temp_index += 1
     return list_of_products
 
 @view
 @external
-def get_product(_pk:bytes32) -> bytes32:
+def validate_product_serial(_pk:bytes32, _serial_key:uint256) -> (bool):
     max_len: uint256 = self.accounts_details[msg.sender].product_index
     for i in range(1000):
         if i >= max_len:
             break
         if self.products_details[msg.sender][i].pk == _pk:
-            return self.products_details[msg.sender][i].name
-    return 0x0000000000000000000000000000000000000000000000000000000000000000
+            product: Product = self.products_details[msg.sender][i]
+            for key in product.unit_serial_list:
+                if key == _serial_key:
+                    return True
+    return False
+ 
+@view
+@external
+def get_product_prop(_pk:bytes32) -> (bytes32[2], uint256, decimal, bytes32, String[100], uint256[10]):
+    max_len: uint256 = self.accounts_details[msg.sender].product_index
+    for i in range(1000):
+        if i >= max_len:
+            break
+        if self.products_details[msg.sender][i].pk == _pk:
+            product: Product = self.products_details[msg.sender][i]
+            return ([product.name, product.category], product.release_year, product.price, product.country, product.description, product.unit_serial_list)
+    temp: bytes32 = 0x0000000000000000000000000000000000000000000000000000000000000000
+    # Just for the sake of returning... Don't blame me
+    return ([temp, temp], 0, 0.0, temp, '', [0,0,0,0,0,0,0,0,0,0])
+    
 
 @view
 @external
 def get_first_product() -> bytes32:
-    return self.products_details[msg.sender][0].name
+    assert self.exists_account(msg.sender), "You are not authorize"
+    return self.products_details[msg.sender][0].pk
 
 @view
 @external
 def get_last_product() -> bytes32:
-    return self.products_details[msg.sender][self.accounts_details[msg.sender].product_index - 1].name
+    assert self.exists_account(msg.sender), "You are not authorize"
+    return self.products_details[msg.sender][self.accounts_details[msg.sender].product_index - 1].pk
 
-
-@view
-@external
-def get_my_products() -> String[30]:
-    return "Hello there"
