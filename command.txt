@@ -1,8 +1,7 @@
 acc = '0xA9De700656B15946d72779ce89062345702Bd853'
 pid.register_company_account("Zero wing", "7581ac9c227dffd844ae3d6a8f81a8e78cee5256541fbe9192a2f4c28a3e6599", "Asd,car15", {'from': acc})
 
-pid.register_product("iPhone XR", "Smart Phone", 2020, 1690.00, 2000, 'Thailand', 'Iphone 
-made smart phone from Apple', {'from': acc})
+pid.register_product("0x3234303732303231636f64656f6e72756e70726f647563746964", "0x70726f647563742d69642d3031", "programming", 2021, '1690.00', 2000, 'Thailand', 'Noobie contract', {'from': acc})
 
 
 Account => Company
@@ -32,11 +31,21 @@ Company - Many products
 1 Company -> 1000 Products
 1 Product -> 1000 units
 
+Dictionary - Key is PK, value => Product
+List of all keys (all pk)
+Index for the list of all keys
 
-Company_Adddr -> Products [1000]
-Products[1] -> 1000 units
+def generate(length):
+    temp = []
+    for i in range(length):
+        temp.append(b'0x0000000000000000000000000000000000000000000000000000000000000000')
+    return temp
 
-Products[1].pk -> Units [1000]
 
-1 Unit:
- - Serial Code
+pid.register_company_account(b"Zero Wing", "a51a7641fafb6a33dc0cd8542d5dea6dc84d4ae219321d2e8675c383ecbf3461", b"Asd,car15", {'from': '0xA7E7732303307Ef78994B396F4624b793675062E'})
+
+acc = "0xA7E7732303307Ef78994B396F4624b793675062E"
+
+pid.register_product(b"iPhone XR", "Smart Phone", 2020, '1555.05', 2000, 'Thailand', 'Apple SmartPhone', {'from': acc})
+
+

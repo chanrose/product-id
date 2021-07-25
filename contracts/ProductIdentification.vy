@@ -1,12 +1,11 @@
 # Account
 struct Account:
-    name: String[30]
-    secret_key: String[100]
-    password: String[30]
+    name: bytes32
+    secret_key: String[64]
+    password: bytes32
     product_index: uint256
 
 struct Product:
-    pk: bytes32
     name: bytes32
     category: String[30]
     release_year: uint256
@@ -14,20 +13,17 @@ struct Product:
     total_units: uint256
     country: String[30]
     description: String[100]
+    owner: address
 
-struct Unit:
-    serial_code: String[30]
-
+# For Company Account Address
 accounts_details: HashMap[address, Account]
-products_details: HashMap[address, Product[1000]]
-units_details: HashMap[String[30], Unit]
-
 accounts_lists: address[1000]
 account_index: uint256
-product_index: uint256
-
 contract_owner: public(address)
 
+# Product
+# Primary Key -> Product
+products_details: HashMap[address, Product[1000]]
 
 @external
 def __init__():
@@ -43,19 +39,20 @@ def exists_account(_address:address) -> bool:
 
 @view
 @external
-def get_secret_key(_password:String[30]) -> String[100]:
+def get_secret_key(_password:bytes32) -> String[64]:
     assert self.exists_account(msg.sender), "You have not create an account yet"
     assert self.accounts_details[msg.sender].password == _password, "Incorrect password"
     return self.accounts_details[msg.sender].secret_key
 
 @external
-def register_company_account(_name:String[30], _secret_key:String[100], _password: String[30]):
+def register_company_account(_name:bytes32, _secret_key:String[64], _password: bytes32):
     assert not self.exists_account(msg.sender), "You already register an account"
     assert self.account_index < 1000
     self.accounts_details[msg.sender] = Account({name: _name, secret_key: _secret_key, password: _password, product_index: 0})
     self.accounts_lists[self.account_index] = msg.sender
     self.account_index += 1
 
+# PK should be the hash format of timestamp + company name + product name
 @external
 def register_product(
     _name:bytes32, 
@@ -67,25 +64,39 @@ def register_product(
     _description:String[100]
     ):
     assert self.exists_account(msg.sender), "Please create your account first"
-    assert self.product_index < 1000
    
     self.products_details[msg.sender][self.accounts_details[msg.sender].product_index] = Product({
-        pk: sha256(_name),
         name: _name, 
         category: _category, 
         release_year: _release_year, 
         price: _price, 
         total_units: _total_units, 
         country: _country, 
-        description: _description
+        description: _description,
+        owner: msg.sender
         })
     self.accounts_details[msg.sender].product_index += 1
 
 @view
 @external
-def get_list_of_products() -> bytes32[1000]:
-    list_of_products: bytes32[1000] = [1000] 
-    for i in self.products_details[msg.sender]:
-        list_of_products[i] = products_details[msg.sender][i].name
+def get_list_of_products(_arr:bytes32[1000]) -> bytes32[1000]:
+    list_of_products: bytes32[1000] = _arr
+    temp_index: uint256 = 0
+    max_index: uint256 = self.accounts_details[msg.sender].product_index
+    length: int256 = 100
+    for i in range(100):
+        if temp_index > max_index:
+            break
+        list_of_products[temp_index] = self.products_details[msg.sender][i].name
+        temp_index += 1
     return list_of_products
-    # return self.products_details[msg.sender][0].name
+
+@view
+@external
+def get_first_product() -> bytes32:
+    return self.products_details[msg.sender][0].name
+
+@view
+@external
+def get_my_products() -> String[30]:
+    return "Hello there"

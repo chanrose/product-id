@@ -1,4 +1,4 @@
 from brownie import *
 
 def main():
-    accounts[0].deploy(ProductIdentification)
+    accounts[1].deploy(ProductIdentification)
