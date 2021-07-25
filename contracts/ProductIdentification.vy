@@ -6,6 +6,7 @@ struct Account:
     product_index: uint256
 
 struct Product:
+    pk: bytes32
     name: bytes32
     category: String[30]
     release_year: uint256
@@ -19,11 +20,17 @@ struct Product:
 accounts_details: HashMap[address, Account]
 accounts_lists: address[1000]
 account_index: uint256
+
 contract_owner: public(address)
 
 # Product
 # Primary Key -> Product
 products_details: HashMap[address, Product[1000]]
+products_pk: bytes32[1000]
+products_pk_index: uint256
+
+# Units
+units_details: HashMap[bytes32, bytes32[1000]]
 
 @external
 def __init__():
@@ -55,6 +62,7 @@ def register_company_account(_name:bytes32, _secret_key:String[64], _password: b
 # PK should be the hash format of timestamp + company name + product name
 @external
 def register_product(
+    _pk:bytes32,
     _name:bytes32, 
     _category:String[30], 
     _release_year:uint256, 
@@ -66,6 +74,7 @@ def register_product(
     assert self.exists_account(msg.sender), "Please create your account first"
    
     self.products_details[msg.sender][self.accounts_details[msg.sender].product_index] = Product({
+        pk: _pk,
         name: _name, 
         category: _category, 
         release_year: _release_year, 
@@ -93,8 +102,25 @@ def get_list_of_products(_arr:bytes32[1000]) -> bytes32[1000]:
 
 @view
 @external
+def get_product(_pk:bytes32) -> bytes32:
+    max_len: uint256 = self.accounts_details[msg.sender].product_index
+    for i in range(1000):
+        if i >= max_len:
+            break
+        if self.products_details[msg.sender][i].pk == _pk:
+            return self.products_details[msg.sender][i].name
+    return 0x0000000000000000000000000000000000000000000000000000000000000000
+
+@view
+@external
 def get_first_product() -> bytes32:
     return self.products_details[msg.sender][0].name
+
+@view
+@external
+def get_last_product() -> bytes32:
+    return self.products_details[msg.sender][self.accounts_details[msg.sender].product_index - 1].name
+
 
 @view
 @external
