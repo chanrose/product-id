@@ -44,7 +44,7 @@ def get_company_account_name(_sender):
 def generate_pk(_product_name, _company_name):
     return (_product_name + _company_name + str(datetime.now().timestamp())).encode()
 
-def register_product(_company_name, _name, _category, _release_year, _price, _country, _description, _serial_list, _sender, _sec ):
+def register_product_py(_company_name, _name, _category, _release_year, _price, _country, _description, _serial_list, _sender, _sec ):
     pk = generate_pk(_name, _company_name)
     nonce = w3.eth.getTransactionCount(_sender)
     txn = pid.functions.register_product(pk, _name.encode(), _category.encode(), 2000, Decimal(12412.35), _country.encode(), _description, [1, 2, 3, 4 ,5 ,6, 7, 8, 9, 10]).buildTransaction({
@@ -57,7 +57,7 @@ def register_product(_company_name, _name, _category, _release_year, _price, _co
     w3.eth.waitForTransactionReceipt(signed_txn_hash)
 
 company_name = get_company_account_name(contract['sender'])
-register_product("zero wing", "OnePlus 6t", "Smartphone", 2018, '600.01', "Cambodia", "Android smart phone", generate_arr([1239814, 1209599, 234123, 234123, 124125123], 0, 10), contract['sender'], contract['private_key']) 
+register_product_py("zero wing", "OnePlus 6t", "Smartphone", 2018, '600.01', "Cambodia", "Android smart phone", generate_arr([1239814, 1209599, 234123, 234123, 124125123], 0, 10), contract['sender'], contract['private_key']) 
 
 
 
