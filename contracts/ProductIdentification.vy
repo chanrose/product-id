@@ -26,6 +26,17 @@ contract_owner: public(address)
 # Primary Key -> Product
 products_details: HashMap[address, Product[1000]]
 
+event Account_Creation:
+    _pub_key:indexed(address)
+    _name:bytes32 
+    _timestamp:uint256
+
+event Product_Registration_Update:
+    _pub_key:indexed(address)
+    _pk:bytes32
+    _name:bytes32 
+    _timestamp:uint256
+
 @external
 def __init__():
     self.contract_owner = msg.sender
@@ -52,12 +63,12 @@ def register_company_account(_name:bytes32, _secret_key:String[64], _password: b
     self.accounts_details[msg.sender] = Account({name: _name, secret_key: _secret_key, password: _password, product_index: 0})
     self.accounts_lists[self.account_index] = msg.sender
     self.account_index += 1
+    log Account_Creation(msg.sender, _name, block.timestamp)
 
 @view
 @external
 def get_company_account_name() -> bytes32:
     return self.accounts_details[msg.sender].name
-
 
 # PK should be the hash format of timestamp + company name + product name
 @external
@@ -83,6 +94,7 @@ def register_product(
         unit_serial_list: _serial_lists
         })
     self.accounts_details[msg.sender].product_index += 1
+    log Product_Registration_Update(msg.sender, _pk, _name, block.timestamp)
 
 
 @external
@@ -105,6 +117,8 @@ def update_product(
             product.price = _price
             product.description = _description
             self.products_details[msg.sender][i] = product
+            log Product_Registration_Update(msg.sender, product.pk, _name, block.timestamp)
+
 
 @view
 @external
