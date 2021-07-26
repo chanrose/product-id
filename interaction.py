@@ -121,9 +121,9 @@ def get_secret_key(_sender, _pw):
 
 p_name = "Google Pixel"
 pk = generate_pk(p_name).encode('UTF-8')
-print(register_product(pk, p_name.encode(), "SmartPhone".encode(), 2021, 78421, "US".encode(), "Android phone", generate_arr([12323, 23123, 5123], 0, 10), contract['sender'], contract['private_key']))
+# print(register_product(pk, p_name.encode(), "SmartPhone".encode(), 2021, 78421, "US".encode(), "Android phone", generate_arr([12323, 23123, 5123], 0, 10), contract['sender'], contract['private_key']))
 
-print(get_product_prop(pk, contract['sender']))
+# print(get_product_prop(pk, contract['sender']))
 # valid = validate_product_serial(pk, 5123, contract['sender'])
 # print(get_product_prop(pk.encode(), contract['sender'])) 
 # update_product(pk.encode(), "Nexus 5t".encode(), "Cell phone".encode(), 2222, "Dumb phone", contract['sender'], contract['private_key'])
@@ -134,3 +134,4 @@ print(get_product_prop(pk, contract['sender']))
 
 # print(get_secret_key(contract['sender'], b"Asd,car15"))
 # print(get_company_account_name(contract['sender']))
+
