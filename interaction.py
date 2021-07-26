@@ -14,7 +14,7 @@ compiled_code = compile_codes(smart_contract, format, 'dict')
 abi, bytecode = compiled_code['aiucoin']['abi'], compiled_code['aiucoin']['bytecode']
 w3 = Web3(HTTPProvider('HTTP://127.0.0.1:7545'))
 contract = {
-    'contract_addr': '0x03AF9e0e052F60976029cDD8E3fe61d1BE298aCf',
+    'contract_addr': '0x560a99A9E230371E7177504169db120842c48800',
     'sender': '0xA9De700656B15946d72779ce89062345702Bd853',
     'private_key': '7581ac9c227dffd844ae3d6a8f81a8e78cee5256541fbe9192a2f4c28a3e6599'
 }
@@ -36,11 +36,11 @@ def register_company_account(_sender, _name, _sec, _pw):
     })
     signed_txn = w3.eth.account.signTransaction(txn, private_key=_sec)
     signed_txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
-    w3.eth.waitForTransactionReceipt(signed_txn_hash)
+    return w3.eth.waitForTransactionReceipt(signed_txn_hash)
 
 def get_company_account_name(_sender):
     w3.eth.defaultAccount = _sender
-    return pid.functions.get_company_account_name().call()
+    return clean_bytes(pid.functions.get_company_account_name().call())
 
 def generate_pk(_product_name):
     now = str(datetime.now().timestamp())
@@ -116,16 +116,21 @@ def validate_product_serial(_pk, _serial_key, _sender):
 
 def get_secret_key(_sender, _pw):
     w3.eth.defaultAccount = _sender
-    return pid.functions.get_secret_key(_pw.encode()).call()
+    return pid.functions.get_secret_key(_pw).call()
 
 
 p_name = "Google Pixel"
 pk = generate_pk(p_name).encode('UTF-8')
-#print(register_product(pk, p_name.encode(), "SmartPhone".encode(), 2021, 78421, "US".encode(), "Android phone", generate_arr([12323, 23123, 5123], 0, 10), contract['sender'], contract['private_key']))
+print(register_product(pk, p_name.encode(), "SmartPhone".encode(), 2021, 78421, "US".encode(), "Android phone", generate_arr([12323, 23123, 5123], 0, 10), contract['sender'], contract['private_key']))
 
-# print(get_product_prop(b'Google Pixel1627287900.191328', contract['sender']))
-pk = 'Google Pixel1627287900.191328'
+print(get_product_prop(pk, contract['sender']))
 # valid = validate_product_serial(pk, 5123, contract['sender'])
 # print(get_product_prop(pk.encode(), contract['sender'])) 
 # update_product(pk.encode(), "Nexus 5t".encode(), "Cell phone".encode(), 2222, "Dumb phone", contract['sender'], contract['private_key'])
 
+
+
+# register_company_account(contract['sender'], b"Zero Wing", contract['private_key'], b'Asd,car15')
+
+# print(get_secret_key(contract['sender'], b"Asd,car15"))
+# print(get_company_account_name(contract['sender']))

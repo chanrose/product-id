@@ -136,20 +136,6 @@ def get_list_of_products(_arr:bytes32[1000]) -> bytes32[1000]:
 
 @view
 @external
-def validate_product_serial(_pk:bytes32, _serial_key:uint256) -> (bool):
-    max_len: uint256 = self.accounts_details[msg.sender].product_index
-    for i in range(1000):
-        if i >= max_len:
-            break
-        if self.products_details[msg.sender][i].pk == _pk:
-            product: Product = self.products_details[msg.sender][i]
-            for key in product.unit_serial_list:
-                if key == _serial_key:
-                    return True
-    return False
- 
-@view
-@external
 def get_product_prop(_pk:bytes32) -> (bytes32[2], uint256, uint256, bytes32, String[100], uint256[10]):
     max_len: uint256 = self.accounts_details[msg.sender].product_index
     for i in range(1000):
