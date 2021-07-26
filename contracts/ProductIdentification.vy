@@ -10,7 +10,7 @@ struct Product:
     name: bytes32
     category: bytes32
     release_year: uint256
-    price: decimal
+    price: uint256
     country: bytes32
     description: String[100]
     unit_serial_list: uint256[10]
@@ -77,7 +77,7 @@ def register_product(
     _name:bytes32, 
     _category:bytes32, 
     _release_year:uint256, 
-    _price:decimal, 
+    _price:uint256, 
     _country:bytes32, 
     _description:String[100],
     _serial_lists:uint256[10]
@@ -102,7 +102,7 @@ def update_product(
     _target_product_pk:bytes32,
     _name:bytes32, 
     _category:bytes32, 
-    _price:decimal, 
+    _price:uint256, 
     _description:String[100],
     ):
     assert self.exists_account(msg.sender), "You are not authorize"
@@ -150,7 +150,7 @@ def validate_product_serial(_pk:bytes32, _serial_key:uint256) -> (bool):
  
 @view
 @external
-def get_product_prop(_pk:bytes32) -> (bytes32[2], uint256, decimal, bytes32, String[100], uint256[10]):
+def get_product_prop(_pk:bytes32) -> (bytes32[2], uint256, uint256, bytes32, String[100], uint256[10]):
     max_len: uint256 = self.accounts_details[msg.sender].product_index
     for i in range(1000):
         if i >= max_len:
@@ -160,7 +160,7 @@ def get_product_prop(_pk:bytes32) -> (bytes32[2], uint256, decimal, bytes32, Str
             return ([product.name, product.category], product.release_year, product.price, product.country, product.description, product.unit_serial_list)
     temp: bytes32 = 0x0000000000000000000000000000000000000000000000000000000000000000
     # Just for the sake of returning... Don't blame me
-    return ([temp, temp], 0, 0.0, temp, '', [0,0,0,0,0,0,0,0,0,0])
+    return ([temp, temp], 0, 0, temp, '', [0,0,0,0,0,0,0,0,0,0])
     
 
 @view
