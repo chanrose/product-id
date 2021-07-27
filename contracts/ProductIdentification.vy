@@ -17,7 +17,7 @@ struct Product:
 
 # For Company Account Address
 accounts_details: HashMap[address, Account]
-accounts_lists: address[1000]
+accounts_lists: address[500]
 account_index: uint256
 
 contract_owner: public(address)
@@ -119,6 +119,13 @@ def update_product(
             self.products_details[msg.sender][i] = product
             log Product_Registration_Update(msg.sender, product.pk, _name, block.timestamp)
 
+
+
+@view
+@external
+def get_list_of_company_acc() -> address[500]:
+    assert self.contract_owner == msg.sender, "You are not authorize"
+    return self.accounts_lists
 
 @view
 @external

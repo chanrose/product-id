@@ -8,15 +8,15 @@ source = open("contracts/ProductIdentification.vy", 'r')
 contract_source_code = source.read()
 source.close()
 smart_contract = {}
-smart_contract['aiucoin'] = contract_source_code
+smart_contract['pid'] = contract_source_code
 format = ['abi', 'bytecode']
 compiled_code = compile_codes(smart_contract, format, 'dict')
-abi, bytecode = compiled_code['aiucoin']['abi'], compiled_code['aiucoin']['bytecode']
+abi, bytecode = compiled_code['pid']['abi'], compiled_code['pid']['bytecode']
 w3 = Web3(HTTPProvider('HTTP://127.0.0.1:7545'))
 contract = {
-    'contract_addr': '0x560a99A9E230371E7177504169db120842c48800',
-    'sender': '0xA9De700656B15946d72779ce89062345702Bd853',
-    'private_key': '7581ac9c227dffd844ae3d6a8f81a8e78cee5256541fbe9192a2f4c28a3e6599'
+    'contract_addr': '0x632442372726AD0A21Cb4C10862F48D219dA1A61',
+    'sender': '0x82C8e96B7C196AaB49cc4f84B7b73d95435c791d',
+    'private_key': '78db86f815229c527912c9f74b610dccc49a89af3db84c096e62374a1d7999c9'
 }
 pid = w3.eth.contract(address=contract['contract_addr'], abi=abi)
 w3.eth.defaultAccount = contract['sender']
@@ -38,17 +38,29 @@ def register_company_account(_sender, _name, _sec, _pw):
     signed_txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
     return w3.eth.waitForTransactionReceipt(signed_txn_hash)
 
+def clean_bytes(_input):
+    return _input.decode().rstrip('\x00')
+
+
 def get_company_account_name(_sender):
     w3.eth.defaultAccount = _sender
     return clean_bytes(pid.functions.get_company_account_name().call())
 
+def get_company_name_list(_sender):
+    w3.eth.defaultAccount = _sender
+    tmp = pid.functions.get_list_of_company_acc().call()
+    new_list = []
+    for key, val in enumerate(tmp):
+        if '0x000' in val:
+            return new_list
+        new_list.append(get_company_account_name(val))
+    return new_list
+
+print("Names", get_company_name_list(pid.functions.contract_owner().call()))
+
 def generate_pk(_product_name):
     now = str(datetime.now().timestamp())
     return(_product_name + now)
-
-def clean_bytes(_input):
-    return _input.decode().rstrip('\x00')
-
 
 def register_product(_pk, _name, _category, _release_year, _price, _country, _description, _serial_list, _sender, _key):
     w3.eth.defaultAccount = _sender
